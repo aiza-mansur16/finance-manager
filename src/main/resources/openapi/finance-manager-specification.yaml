@@ -1,0 +1,980 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:58808
+  description: Generated server url
+paths:
+  /api/expenses:
+    get:
+      tags:
+      - expense-controller
+      summary: Get all expenses
+      description: Retrieve all expense records
+      operationId: getAllExpenses
+      parameters:
+      - name: expenseQueryDto
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/ExpenseQueryDto"
+      responses:
+        "200":
+          description: Expenses retrieved successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelope"
+    post:
+      tags:
+      - expense-controller
+      summary: Add a new expense
+      description: Create a new expense record
+      operationId: addExpense
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExpenseCreateDto"
+        required: true
+      responses:
+        "201":
+          description: Expense created successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelope"
+        "400":
+          description: Invalid request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelope"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelope"
+  /api/budgets:
+    get:
+      tags:
+      - budget-controller
+      summary: Get all budgets
+      description: Get all budgets based on provided query parameters.
+      operationId: getAllBudgets
+      parameters:
+      - name: budgetQuery
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/BudgetQueryDto"
+      responses:
+        "200":
+          description: Budgets retrieved successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelope"
+    post:
+      tags:
+      - budget-controller
+      summary: Add a new budget
+      description: Create a new budget with the provided details.
+      operationId: addbudget
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetCreateDto"
+        required: true
+      responses:
+        "201":
+          description: Budget created successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelope"
+        "400":
+          description: Invalid request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelope"
+  /api/budgets/{id}:
+    get:
+      tags:
+      - budget-controller
+      summary: Get budget by id
+      description: Retrieve budget by id
+      operationId: getBudgetById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Budget retrieved successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelope"
+        "404":
+          description: Budget not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      tags:
+      - budget-controller
+      summary: Delete a budget
+      description: Delete an existing budget.
+      operationId: deleteBudget
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Budget deleted successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelopeVoid"
+    patch:
+      tags:
+      - budget-controller
+      summary: Update a budget
+      description: Update the details of an existing budget.
+      operationId: updateBudget
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetPatchDto"
+        required: true
+      responses:
+        "200":
+          description: Budget updated successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelope"
+        "400":
+          description: Invalid request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelope"
+        "404":
+          description: Budget not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/expenses/{id}:
+    get:
+      tags:
+      - expense-controller
+      summary: Get expense by id
+      description: Retrieve expense by id
+      operationId: getExpenseById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Expense found successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelope"
+        "404":
+          description: Expense not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelopeExpenseDto"
+    delete:
+      tags:
+      - expense-controller
+      summary: Delete expense
+      description: Delete expense by id
+      operationId: deleteExpense
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Expense deleted successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEnvelopeVoid"
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        statusCode:
+          type: string
+          description: status code of the error
+          enum:
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 EARLY_HINTS
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
+        messages:
+          type: array
+          description: messages of the error
+          items:
+            type: string
+            description: messages of the error
+      description: response error
+    Page:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: page number
+          format: int64
+        pageSize:
+          type: integer
+          description: page size
+          format: int64
+        totalRecords:
+          type: integer
+          description: total records
+          format: int64
+        totalPages:
+          type: integer
+          description: total pages
+          format: int64
+      description: response pagination information
+    ResponseEnvelope:
+      type: object
+      properties:
+        data:
+          type: object
+          description: response data
+        errorInfo:
+          $ref: "#/components/schemas/Error"
+        page:
+          $ref: "#/components/schemas/Page"
+    ExpenseCreateDto:
+      required:
+      - amount
+      - category
+      - date
+      - description
+      - userId
+      type: object
+      properties:
+        userId:
+          type: integer
+          description: user id for which expense is to be created
+          format: int64
+        amount:
+          minimum: 1
+          type: number
+          description: amount of expense
+        category:
+          type: string
+          description: category of expense
+          enum:
+          - GROCERY
+          - TRANSPORTATION
+          - FOOD
+          - OTHERS
+        date:
+          type: string
+          description: date of expense
+          format: date
+        description:
+          type: string
+          description: description of expense
+    BudgetCreateDto:
+      required:
+      - category
+      - limit
+      - month
+      - userId
+      - year
+      type: object
+      properties:
+        userId:
+          type: integer
+          description: user id for whom budget is to be created
+          format: int64
+        category:
+          type: string
+          description: budget category
+          enum:
+          - GROCERY
+          - TRANSPORTATION
+          - FOOD
+          - OTHERS
+        limit:
+          minimum: 10
+          type: number
+          description: budget limit
+        month:
+          type: string
+          description: budget month
+          enum:
+          - JANUARY
+          - FEBRUARY
+          - MARCH
+          - APRIL
+          - MAY
+          - JUNE
+          - JULY
+          - AUGUST
+          - SEPTEMBER
+          - OCTOBER
+          - NOVEMBER
+          - DECEMBER
+        year:
+          type: integer
+          description: budget year
+          format: int32
+        description:
+          type: string
+          description: budget description
+    ContentDisposition:
+      type: object
+      properties:
+        type:
+          type: string
+        name:
+          type: string
+        filename:
+          type: string
+        charset:
+          type: string
+        size:
+          type: integer
+          format: int64
+          deprecated: true
+        creationDate:
+          type: string
+          format: date-time
+          deprecated: true
+        modificationDate:
+          type: string
+          format: date-time
+          deprecated: true
+        readDate:
+          type: string
+          format: date-time
+          deprecated: true
+        inline:
+          type: boolean
+        attachment:
+          type: boolean
+        formData:
+          type: boolean
+    ErrorResponse:
+      type: object
+      properties:
+        headers:
+          type: object
+          properties:
+            empty:
+              type: boolean
+            location:
+              type: string
+              format: uri
+            host:
+              type: object
+              properties:
+                address:
+                  type: object
+                  properties:
+                    hostAddress:
+                      type: string
+                    address:
+                      type: array
+                      items:
+                        type: string
+                        format: byte
+                    hostName:
+                      type: string
+                    linkLocalAddress:
+                      type: boolean
+                    multicastAddress:
+                      type: boolean
+                    anyLocalAddress:
+                      type: boolean
+                    loopbackAddress:
+                      type: boolean
+                    siteLocalAddress:
+                      type: boolean
+                    mcglobal:
+                      type: boolean
+                    mcnodeLocal:
+                      type: boolean
+                    mclinkLocal:
+                      type: boolean
+                    mcsiteLocal:
+                      type: boolean
+                    mcorgLocal:
+                      type: boolean
+                    canonicalHostName:
+                      type: string
+                port:
+                  type: integer
+                  format: int32
+                unresolved:
+                  type: boolean
+                hostName:
+                  type: string
+                hostString:
+                  type: string
+            all:
+              type: object
+              additionalProperties:
+                type: string
+              writeOnly: true
+            lastModified:
+              type: integer
+              format: int64
+            date:
+              type: integer
+              format: int64
+            contentLength:
+              type: integer
+              format: int64
+            connection:
+              type: array
+              items:
+                type: string
+            ifModifiedSince:
+              type: integer
+              format: int64
+            contentType:
+              $ref: "#/components/schemas/MediaType"
+            acceptLanguage:
+              type: array
+              items:
+                type: object
+                properties:
+                  range:
+                    type: string
+                  weight:
+                    type: number
+                    format: double
+            basicAuth:
+              type: string
+              writeOnly: true
+            acceptPatch:
+              type: array
+              items:
+                $ref: "#/components/schemas/MediaType"
+            accept:
+              type: array
+              items:
+                $ref: "#/components/schemas/MediaType"
+            expires:
+              type: integer
+              format: int64
+            bearerAuth:
+              type: string
+              writeOnly: true
+            contentLanguage:
+              type: object
+              properties:
+                language:
+                  type: string
+                displayName:
+                  type: string
+                country:
+                  type: string
+                variant:
+                  type: string
+                script:
+                  type: string
+                unicodeLocaleAttributes:
+                  uniqueItems: true
+                  type: array
+                  items:
+                    type: string
+                unicodeLocaleKeys:
+                  uniqueItems: true
+                  type: array
+                  items:
+                    type: string
+                displayLanguage:
+                  type: string
+                displayScript:
+                  type: string
+                displayCountry:
+                  type: string
+                displayVariant:
+                  type: string
+                extensionKeys:
+                  uniqueItems: true
+                  type: array
+                  items:
+                    type: string
+                iso3Language:
+                  type: string
+                iso3Country:
+                  type: string
+            acceptCharset:
+              type: array
+              items:
+                type: string
+            allow:
+              uniqueItems: true
+              type: array
+              items:
+                $ref: "#/components/schemas/HttpMethod"
+            etag:
+              type: string
+            ifMatch:
+              type: array
+              items:
+                type: string
+            upgrade:
+              type: string
+            ifNoneMatch:
+              type: array
+              items:
+                type: string
+            vary:
+              type: array
+              items:
+                type: string
+            pragma:
+              type: string
+            origin:
+              type: string
+            range:
+              type: array
+              items:
+                $ref: "#/components/schemas/HttpRange"
+            contentDisposition:
+              $ref: "#/components/schemas/ContentDisposition"
+            cacheControl:
+              type: string
+            accessControlRequestMethod:
+              $ref: "#/components/schemas/HttpMethod"
+            acceptLanguageAsLocales:
+              type: array
+              items:
+                type: object
+                properties:
+                  language:
+                    type: string
+                  displayName:
+                    type: string
+                  country:
+                    type: string
+                  variant:
+                    type: string
+                  script:
+                    type: string
+                  unicodeLocaleAttributes:
+                    uniqueItems: true
+                    type: array
+                    items:
+                      type: string
+                  unicodeLocaleKeys:
+                    uniqueItems: true
+                    type: array
+                    items:
+                      type: string
+                  displayLanguage:
+                    type: string
+                  displayScript:
+                    type: string
+                  displayCountry:
+                    type: string
+                  displayVariant:
+                    type: string
+                  extensionKeys:
+                    uniqueItems: true
+                    type: array
+                    items:
+                      type: string
+                  iso3Language:
+                    type: string
+                  iso3Country:
+                    type: string
+            accessControlAllowCredentials:
+              type: boolean
+            accessControlAllowOrigin:
+              type: string
+            accessControlAllowMethods:
+              type: array
+              items:
+                $ref: "#/components/schemas/HttpMethod"
+            accessControlExposeHeaders:
+              type: array
+              items:
+                type: string
+            accessControlMaxAge:
+              type: integer
+              format: int64
+            accessControlAllowHeaders:
+              type: array
+              items:
+                type: string
+            ifUnmodifiedSince:
+              type: integer
+              format: int64
+            accessControlRequestHeaders:
+              type: array
+              items:
+                type: string
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        statusCode:
+          $ref: "#/components/schemas/HttpStatusCode"
+        body:
+          $ref: "#/components/schemas/ProblemDetail"
+        detailMessageArguments:
+          type: array
+          items:
+            type: object
+        detailMessageCode:
+          type: string
+        titleMessageCode:
+          type: string
+        typeMessageCode:
+          type: string
+    HttpMethod:
+      type: object
+    HttpRange:
+      type: object
+    HttpStatusCode:
+      type: object
+      properties:
+        error:
+          type: boolean
+        is4xxClientError:
+          type: boolean
+        is5xxServerError:
+          type: boolean
+        is2xxSuccessful:
+          type: boolean
+        is1xxInformational:
+          type: boolean
+        is3xxRedirection:
+          type: boolean
+    MediaType:
+      type: object
+      properties:
+        type:
+          type: string
+        subtype:
+          type: string
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+        qualityValue:
+          type: number
+          format: double
+        charset:
+          type: string
+        concrete:
+          type: boolean
+        wildcardSubtype:
+          type: boolean
+        wildcardType:
+          type: boolean
+        subtypeSuffix:
+          type: string
+    ProblemDetail:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+    BudgetPatchDto:
+      type: object
+      properties:
+        limit:
+          minimum: 10
+          type: number
+          description: budget limit
+        description:
+          type: string
+          description: budget description
+    ExpenseQueryDto:
+      required:
+      - page
+      - size
+      type: object
+      properties:
+        id:
+          type: integer
+          description: id of expense
+          format: int64
+        userId:
+          type: integer
+          description: id of user to whom expense belongs
+          format: int64
+        category:
+          type: string
+          description: category of expense
+          enum:
+          - GROCERY
+          - TRANSPORTATION
+          - FOOD
+          - OTHERS
+        amount:
+          type: number
+          description: amount of expense
+        dayOfMonth:
+          type: integer
+          description: day of month when expense was created
+          format: int32
+        month:
+          type: string
+          description: mont of expense
+          enum:
+          - JANUARY
+          - FEBRUARY
+          - MARCH
+          - APRIL
+          - MAY
+          - JUNE
+          - JULY
+          - AUGUST
+          - SEPTEMBER
+          - OCTOBER
+          - NOVEMBER
+          - DECEMBER
+        year:
+          type: integer
+          description: year of expense
+          format: int32
+        description:
+          type: string
+          description: description of expense
+        page:
+          minimum: 0
+          type: integer
+          description: page number
+          format: int32
+        size:
+          maximum: 50
+          minimum: 1
+          type: integer
+          description: page size
+          format: int32
+    ExpenseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: id of expense
+          format: int64
+        userId:
+          type: integer
+          description: user id to whom the expense belongs
+          format: int64
+        amount:
+          type: number
+          description: amount of expense
+        category:
+          type: string
+          description: category of expense
+          enum:
+          - GROCERY
+          - TRANSPORTATION
+          - FOOD
+          - OTHERS
+        date:
+          type: string
+          description: date of expense
+          format: date
+        description:
+          type: string
+          description: description of expense
+      description: response data
+    ResponseEnvelopeExpenseDto:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/ExpenseDto"
+        errorInfo:
+          $ref: "#/components/schemas/Error"
+        page:
+          $ref: "#/components/schemas/Page"
+    BudgetQueryDto:
+      required:
+      - page
+      - size
+      type: object
+      properties:
+        id:
+          type: integer
+          description: id of budget
+          format: int64
+        userId:
+          type: integer
+          description: id of user to whom the budget belongs
+          format: int64
+        category:
+          type: string
+          description: budget category
+          enum:
+          - GROCERY
+          - TRANSPORTATION
+          - FOOD
+          - OTHERS
+        limit:
+          type: number
+          description: budget limit
+        month:
+          type: string
+          description: budget month
+          enum:
+          - JANUARY
+          - FEBRUARY
+          - MARCH
+          - APRIL
+          - MAY
+          - JUNE
+          - JULY
+          - AUGUST
+          - SEPTEMBER
+          - OCTOBER
+          - NOVEMBER
+          - DECEMBER
+        year:
+          type: integer
+          description: budget year
+          format: int32
+        description:
+          type: string
+          description: budget description
+        page:
+          minimum: 0
+          type: integer
+          description: page number
+          format: int32
+        size:
+          maximum: 50
+          minimum: 1
+          type: integer
+          description: page size
+          format: int32
+    ResponseEnvelopeVoid:
+      type: object
+      properties:
+        data:
+          type: object
+          description: response data
+        errorInfo:
+          $ref: "#/components/schemas/Error"
+        page:
+          $ref: "#/components/schemas/Page"

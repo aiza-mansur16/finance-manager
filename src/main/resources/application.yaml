@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: finance-manager
+  jpa:
+    generate-ddl: true
+server:
+  port: ${HOST_PORT}
+user:
+  api:
+    base-url: ${USER_HOST_PORT}/api/users
+notification:
+  api:
+    base-url: ${NOTIFICATION_HOST_PORT}/api/notifications

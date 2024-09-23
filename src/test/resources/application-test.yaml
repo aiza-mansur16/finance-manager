@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: finance-manager
+  jpa:
+    generate-ddl: true
+server:
+  port: 8081
+user:
+  api:
+    base-url: http://localhost:8080/api/users
+notification:
+  api:
+    base-url: http://localhost:8082/api/notifications
