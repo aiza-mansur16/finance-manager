@@ -3,6 +3,8 @@ package com.example.financemanager.adapter;
 import com.example.financemanager.utils.model.ResponseEnvelope;
 import com.example.financemanager.utils.model.UserDto;
 import com.example.financemanager.utils.model.exception.UserNotFoundException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -11,16 +13,20 @@ import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Component
-public class UserAdapter extends Adapter<UserDto> {
+public class UserAdapter extends AbstractAdapter<UserDto> {
 
 
     public UserAdapter(RestTemplate restTemplate) {
         super(restTemplate);
     }
 
+    @CircuitBreaker(name = "UserAdapter")
+    @Retry(name = "RetryUserAdapter")
     @Override
     public UserDto getInfo(String url) {
-        log.debug("Fetching user info from user service");
+        if (log.isDebugEnabled()) {
+            log.debug("Fetching user info from user service with url: " + url);
+        }
         var result = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -30,11 +36,15 @@ public class UserAdapter extends Adapter<UserDto> {
         ).getBody();
 
         if (result != null) {
-            log.debug("User info successfully fetched.");
+            if (log.isDebugEnabled()) {
+                log.debug("User info successfully fetched.");
+            }
             return result.data();
         } else {
-            log.warn("User info not found.");
-            throw new UserNotFoundException("User not found.");
+            if (log.isWarnEnabled()) {
+                log.warn("User info not found.");
+            }
+            throw new UserNotFoundException("User not found");
         }
     }
 }

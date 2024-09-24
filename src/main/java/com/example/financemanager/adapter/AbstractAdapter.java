@@ -2,10 +2,10 @@ package com.example.financemanager.adapter;
 
 import org.springframework.web.client.RestTemplate;
 
-public abstract class Adapter<T> {
+public abstract class AbstractAdapter<T> {
     protected final RestTemplate restTemplate;
 
-    protected Adapter(RestTemplate restTemplate) {
+    protected AbstractAdapter(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
