@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/expenses")
+@RequestMapping("/api/v1/expenses")
 @Validated
 public class ExpenseController {
 
@@ -64,7 +64,7 @@ public class ExpenseController {
                     @ApiResponse(responseCode = "404", description = "Expense not found")
             }
     )
-    @GetMapping(value = "/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ResponseEnvelope<ExpenseDto>> getExpenseById(@PathVariable Long id) {
         return new ResponseEntity<>(new ResponseEnvelope<>(expenseService.findById(id), null, null),
                 HttpStatus.OK);
@@ -75,7 +75,7 @@ public class ExpenseController {
             @ApiResponse(responseCode = "204", description = "Expense deleted successfully"),
             }
     )
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResponseEnvelope<Void>> deleteExpense(@PathVariable Long id) {
         expenseService.deleteExpense(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

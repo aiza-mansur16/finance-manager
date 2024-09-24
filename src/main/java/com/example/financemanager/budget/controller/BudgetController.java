@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/budgets")
+@RequestMapping("/api/v1/budgets")
 @Validated
 public class BudgetController {
     private final BudgetService budgetService;
@@ -68,7 +68,7 @@ public class BudgetController {
                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
-    @GetMapping(value = "/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ResponseEnvelope<BudgetDto>> getBudgetById(@PathVariable Long id) {
         return new ResponseEntity<>(new ResponseEnvelope<>(budgetService.findById(id), null, null),
                 HttpStatus.OK);
@@ -87,7 +87,7 @@ public class BudgetController {
                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
-    @PatchMapping(value = "/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<ResponseEnvelope<BudgetDto>> patchBudget(@PathVariable Long id,
                                                                    @RequestBody @Valid BudgetPatchDto budget) {
         return new ResponseEntity<>(new ResponseEnvelope<>(budgetService.patchBudget(id, budget), null, null),
@@ -102,7 +102,7 @@ public class BudgetController {
                     @ApiResponse(responseCode = "204", description = "Budget deleted successfully")
             }
     )
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResponseEnvelope<Void>> deleteBudget(@PathVariable Long id) {
         budgetService.deleteBudget(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

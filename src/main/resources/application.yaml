@@ -7,7 +7,52 @@ server:
   port: ${HOST_PORT}
 user:
   api:
-    base-url: ${USER_HOST_PORT}/api/users
+    base-url: ${USER_HOST_PORT}/api/v1/users
 notification:
   api:
-    base-url: ${NOTIFICATION_HOST_PORT}/api/notifications
+    base-url: ${NOTIFICATION_HOST_PORT}/api/v1/notifications
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health
+  health:
+    circuitbreakers:
+      enabled: true
+resilience4j:
+  circuitbreaker:
+    instances:
+      UserAdapter:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+      EmailNotificationAdapter:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+  retry:
+    instances:
+      RetryUserAdapter:
+        maxRetryAttempts: 3
+        waitDuration: 500ms
+      RetryEmailNotificationAdapter:
+        maxRetryAttempts: 3
+        waitDuration: 500ms
+logging:
+  level:
+    root: WARN
