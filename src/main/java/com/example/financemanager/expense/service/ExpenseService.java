@@ -32,14 +32,18 @@ public class ExpenseService {
     }
 
     public ExpenseDto createExpense(ExpenseCreateDto expense) {
-        log.debug("Adding expense info for user:{}", expense.userId());
+        if (log.isDebugEnabled()) {
+            log.debug("Adding expense info for user:{}", expense.userId());
+        }
         var expenseEntity = mapper.toExpenseEntity(expense);
         expenseTrackerService.track(expenseEntity);
         return mapper.toExpenseDto(repository.save(expenseEntity));
     }
 
     public ResponseEnvelope<List<ExpenseDto>> findAllExpenses(ExpenseQueryDto expenseQuery) {
-        log.debug("Finding all expense info with query:{}", expenseQuery);
+        if (log.isDebugEnabled()) {
+            log.debug("Finding all expense info with query:{}", expenseQuery);
+        }
         var result = repository.findAll(getExampleExpenseEntity(expenseQuery),
                 PageRequest.of(expenseQuery.page(), expenseQuery.size()));
         return new ResponseEnvelope<>(
@@ -64,7 +68,9 @@ public class ExpenseService {
     }
 
     public void deleteExpense(Long id) {
-        log.debug("Deleting expense with id:{}", id);
+        if (log.isDebugEnabled()) {
+            log.debug("Deleting expense with id:{}", id);
+        }
         repository.deleteById(id);
     }
 

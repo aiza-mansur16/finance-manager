@@ -1,4 +1,4 @@
-package com.example.financemanager.tracker;
+package com.example.financemanager.tracker.service;
 
 import com.example.financemanager.adapter.UserAdapter;
 import com.example.financemanager.budget.model.BudgetEntity;
@@ -6,7 +6,6 @@ import com.example.financemanager.budget.repository.BudgetRepository;
 import com.example.financemanager.expense.model.ExpenseEntity;
 import com.example.financemanager.expense.repository.ExpenseRepository;
 import com.example.financemanager.notification.service.EmailNotificationService;
-import com.example.financemanager.tracker.service.ExpenseTrackerService;
 import com.example.financemanager.utils.model.Category;
 import com.example.financemanager.utils.model.UserDto;
 import org.junit.jupiter.api.Test;

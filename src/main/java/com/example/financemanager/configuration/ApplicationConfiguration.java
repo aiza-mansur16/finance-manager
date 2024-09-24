@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+@SuppressWarnings("PMD.CloseResource")
 @Configuration
 public class ApplicationConfiguration {
 

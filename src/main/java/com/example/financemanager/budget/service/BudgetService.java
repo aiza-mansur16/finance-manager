@@ -26,18 +26,24 @@ public class BudgetService {
     }
 
     public BudgetDto createBudget(BudgetCreateDto budget) {
-        log.debug("Creating budget for user:{}", budget.userId());
+        if (log.isDebugEnabled()) {
+            log.debug("Creating budget for user:{}", budget.userId());
+        }
         var budgetEntity = mapper.toBudgetEntity(budget);
         try {
             return mapper.toBudgetDto(repository.saveAndFlush(budgetEntity));
         } catch (DataIntegrityViolationException e) {
-            log.warn("Error saving budget:{}", e.getMessage());
-            throw new IllegalArgumentException("Budget already exists for this user with given month, year and category.");
+            if (log.isWarnEnabled()) {
+                log.warn("Error saving budget:{}", e.getMessage());
+            }
+            throw new IllegalArgumentException("Budget already exists for this user with given month, year and category.", e);
         }
     }
 
     public ResponseEnvelope<List<BudgetDto>> findAllBudgets(BudgetQueryDto budgetQuery) {
-        log.debug("Getting all budgets for query:{}", budgetQuery);
+        if (log.isDebugEnabled()) {
+            log.debug("Getting all budgets for query:{}", budgetQuery);
+        }
         var result = repository.findAll(getExampleBudgetEntity(budgetQuery),
                 PageRequest.of(budgetQuery.page(), budgetQuery.size()));
         return new ResponseEnvelope<>(
@@ -47,9 +53,13 @@ public class BudgetService {
     }
 
     public BudgetDto patchBudget(Long id, BudgetPatchDto budget) {
-        log.debug("Retrieve budget to patch with id:{}", id);
+        if (log.isDebugEnabled()) {
+            log.debug("Retrieve budget to patch with id:{}", id);
+        }
         var savedBudget = repository.getReferenceById(id);
-        log.debug("Patching budget with id:{}", id);
+        if (log.isDebugEnabled()) {
+            log.debug("Patching budget with id:{}", id);
+        }
         return mapper.toBudgetDto(repository.save(getPatchedBudget(budget, savedBudget)));
     }
 
@@ -79,7 +89,9 @@ public class BudgetService {
     }
 
     public void deleteBudget(Long id) {
-        log.debug("Deleting budget with id:{}", id);
+        if (log.isDebugEnabled()) {
+            log.debug("Deleting budget with id:{}", id);
+        }
         repository.deleteById(id);
     }
 

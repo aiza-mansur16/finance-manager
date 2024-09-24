@@ -40,7 +40,9 @@ public class ExpenseTrackerService implements Tracker<ExpenseEntity> {
 
     @Override
     public void track(ExpenseEntity expenseInfo) {
-        log.info("Tracking expense for user: {}", expenseInfo.getUserId());
+        if (log.isDebugEnabled()) {
+            log.debug("Tracking expense for user: {}", expenseInfo.getUserId());
+        }
         budgetRepository.findByUserIdAndMonthAndYearAndCategory(
                         expenseInfo.getUserId(),
                         expenseInfo.getMonth(),
@@ -56,14 +58,16 @@ public class ExpenseTrackerService implements Tracker<ExpenseEntity> {
                             var totalExpenses = expenses.stream().map(ExpenseEntity::getAmount)
                                     .reduce(expenseInfo.getAmount(), BigDecimal::add);
                             if (totalExpenses.compareTo(budget.getLimit()) > 0) {
-                                log.info("Total expense:{} of user:{} for month:{}, year:{} and category:{} has " +
-                                        "exceeded the budget limit:{}",
-                                        totalExpenses,
-                                        expenseInfo.getUserId(),
-                                        expenseInfo.getMonth(),
-                                        budget.getYear(),
-                                        budget.getCategory(),
-                                        budget.getLimit());
+                                if (log.isDebugEnabled()) {
+                                    log.debug("Total expense:{} of user:{} for month:{}, year:{} and category:{} has " +
+                                                    "exceeded the budget limit:{}",
+                                            totalExpenses,
+                                            expenseInfo.getUserId(),
+                                            expenseInfo.getMonth(),
+                                            budget.getYear(),
+                                            budget.getCategory(),
+                                            budget.getLimit());
+                                }
                                 var user = fetchUserInfo(expenseInfo.getUserId());
                                 var exceededAmount = totalExpenses.subtract(expenseInfo.getAmount());
                                 var notification = createEmailNotification(user, budget, expenseInfo, exceededAmount);
