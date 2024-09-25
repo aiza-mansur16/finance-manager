@@ -84,20 +84,17 @@ public class ExpenseTrackerService implements Tracker<ExpenseEntity> {
 
     private EmailInfoDto createEmailNotification(UserDto user, BudgetEntity budget, ExpenseEntity expenseInfo,
                                                  BigDecimal exceededAmount) {
-        var message = """
-                To %s,
-                                
-                Your expenses for %s %s and category %s have exceeded the set budget limit by %s.
-                Details of budget and recent expense are as follows:
-                Budget Category: %s
-                Budget Amount: %s
-                Expense Description: %s
-                Expense Amount: %s
-                                
-                Regards,
-                Finance Manager App""";
+        var message = new StringBuilder(" To %s, %n %n ")
+                .append("Your expenses for %s %s and category %s have exceeded the set budget limit by %s. %n")
+                .append("Details of budget and recent expense are as follows: %n")
+                .append("Budget Category: %s %n")
+                .append("Budget Amount: %s %n")
+                .append("Expense Description: %s %n")
+                .append("Expense Amount: %s %n %n")
+                .append("Regards, %n")
+                .append("Finance Manager App");
         return new EmailInfoDto(user.email(), "Budget Exceed Alert",
-                String.format(message,
+                String.format(message.toString(),
                         user.firstName(),
                         budget.getMonth(),
                         budget.getYear(),

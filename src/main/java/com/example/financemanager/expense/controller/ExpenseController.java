@@ -20,6 +20,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/expenses")
 @Validated
+@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {
+        "EI_EXPOSE_REP2"
+}, justification = "It is only used as an entry point for expense api requests")
 public class ExpenseController {
 
     private final ExpenseService expenseService;

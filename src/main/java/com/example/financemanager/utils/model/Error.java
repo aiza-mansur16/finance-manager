@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 @Data
+@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {
+        "EI_EXPOSE_REP",
+        "EI_EXPOSE_REP2"
+}, justification = "Error is used for error does not expose any sensitive information.")
 public class Error {
         @Schema(description = "status code of the error")
         private HttpStatus statusCode;
