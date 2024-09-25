@@ -1,14 +1,14 @@
 package com.example.financemanager.adapter;
 
-import com.example.financemanager.utils.model.ResponseEnvelope;
 import com.example.financemanager.utils.model.UserDto;
+import com.example.financemanager.utils.model.exception.ThirdPartyServiceUnavailableException;
 import com.example.financemanager.utils.model.exception.UserNotFoundException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
@@ -24,27 +24,21 @@ public class UserAdapter extends AbstractAdapter<UserDto> {
     @Retry(name = "RetryUserAdapter")
     @Override
     public UserDto getInfo(String url) {
-        if (log.isDebugEnabled()) {
-            log.debug("Fetching user info from user service with url: " + url);
-        }
-        var result = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<ResponseEnvelope<UserDto>>() {
-                }
-        ).getBody();
-
-        if (result != null) {
+        try {
             if (log.isDebugEnabled()) {
-                log.debug("User info successfully fetched.");
+                log.debug("Fetching user info from user service with url: " + url);
             }
-            return result.data();
-        } else {
-            if (log.isWarnEnabled()) {
-                log.warn("User info not found.");
+            return restTemplate.getForObject(
+                    url,
+                    UserDto.class
+            );
+
+        } catch (HttpClientErrorException e) {
+            if (HttpStatus.NOT_FOUND == e.getStatusCode()) {
+                throw new UserNotFoundException("User not found", e);
+            } else {
+                throw new ThirdPartyServiceUnavailableException("External service not unavailable", e);
             }
-            throw new UserNotFoundException("User not found");
         }
     }
 }

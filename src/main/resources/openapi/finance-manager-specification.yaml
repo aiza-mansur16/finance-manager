@@ -3,7 +3,7 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-- url: http://localhost:54794
+- url: http://localhost:58419
   description: Generated server url
 paths:
   /api/v1/expenses:
@@ -465,20 +465,6 @@ components:
     ErrorResponse:
       type: object
       properties:
-        body:
-          $ref: "#/components/schemas/ProblemDetail"
-        statusCode:
-          $ref: "#/components/schemas/HttpStatusCode"
-        typeMessageCode:
-          type: string
-        detailMessageArguments:
-          type: array
-          items:
-            type: object
-        detailMessageCode:
-          type: string
-        titleMessageCode:
-          type: string
         headers:
           type: object
           properties:
@@ -551,27 +537,47 @@ components:
               type: array
               items:
                 type: string
+            ifModifiedSince:
+              type: integer
+              format: int64
+            contentType:
+              $ref: "#/components/schemas/MediaType"
+            basicAuth:
+              type: string
+              writeOnly: true
+            acceptLanguage:
+              type: array
+              items:
+                type: object
+                properties:
+                  range:
+                    type: string
+                  weight:
+                    type: number
+                    format: double
+            acceptPatch:
+              type: array
+              items:
+                $ref: "#/components/schemas/MediaType"
+            accept:
+              type: array
+              items:
+                $ref: "#/components/schemas/MediaType"
             origin:
               type: string
-            acceptCharset:
+            ifMatch:
               type: array
               items:
                 type: string
-            cacheControl:
+            pragma:
               type: string
-            contentDisposition:
-              $ref: "#/components/schemas/ContentDisposition"
+            bearerAuth:
+              type: string
+              writeOnly: true
             range:
               type: array
               items:
                 $ref: "#/components/schemas/HttpRange"
-            allow:
-              uniqueItems: true
-              type: array
-              items:
-                $ref: "#/components/schemas/HttpMethod"
-            etag:
-              type: string
             contentLanguage:
               type: object
               properties:
@@ -612,51 +618,53 @@ components:
                   type: string
                 iso3Country:
                   type: string
-            acceptLanguage:
-              type: array
-              items:
-                type: object
-                properties:
-                  range:
-                    type: string
-                  weight:
-                    type: number
-                    format: double
-            basicAuth:
-              type: string
-              writeOnly: true
-            accept:
-              type: array
-              items:
-                $ref: "#/components/schemas/MediaType"
-            acceptPatch:
-              type: array
-              items:
-                $ref: "#/components/schemas/MediaType"
             expires:
               type: integer
               format: int64
-            ifMatch:
-              type: array
-              items:
-                type: string
             ifNoneMatch:
               type: array
               items:
                 type: string
-            bearerAuth:
+            etag:
               type: string
-              writeOnly: true
-            pragma:
-              type: string
+            allow:
+              uniqueItems: true
+              type: array
+              items:
+                $ref: "#/components/schemas/HttpMethod"
+            acceptCharset:
+              type: array
+              items:
+                type: string
             upgrade:
               type: string
             vary:
               type: array
               items:
                 type: string
+            contentDisposition:
+              $ref: "#/components/schemas/ContentDisposition"
+            cacheControl:
+              type: string
+            accessControlRequestMethod:
+              $ref: "#/components/schemas/HttpMethod"
+            accessControlRequestHeaders:
+              type: array
+              items:
+                type: string
+            ifUnmodifiedSince:
+              type: integer
+              format: int64
             accessControlAllowCredentials:
               type: boolean
+            accessControlExposeHeaders:
+              type: array
+              items:
+                type: string
+            accessControlAllowMethods:
+              type: array
+              items:
+                $ref: "#/components/schemas/HttpMethod"
             acceptLanguageAsLocales:
               type: array
               items:
@@ -699,41 +707,33 @@ components:
                     type: string
                   iso3Country:
                     type: string
+            accessControlAllowOrigin:
+              type: string
             accessControlAllowHeaders:
-              type: array
-              items:
-                type: string
-            accessControlAllowMethods:
-              type: array
-              items:
-                $ref: "#/components/schemas/HttpMethod"
-            accessControlRequestHeaders:
-              type: array
-              items:
-                type: string
-            accessControlRequestMethod:
-              $ref: "#/components/schemas/HttpMethod"
-            accessControlExposeHeaders:
               type: array
               items:
                 type: string
             accessControlMaxAge:
               type: integer
               format: int64
-            ifUnmodifiedSince:
-              type: integer
-              format: int64
-            accessControlAllowOrigin:
-              type: string
-            ifModifiedSince:
-              type: integer
-              format: int64
-            contentType:
-              $ref: "#/components/schemas/MediaType"
           additionalProperties:
             type: array
             items:
               type: string
+        body:
+          $ref: "#/components/schemas/ProblemDetail"
+        statusCode:
+          $ref: "#/components/schemas/HttpStatusCode"
+        typeMessageCode:
+          type: string
+        detailMessageCode:
+          type: string
+        titleMessageCode:
+          type: string
+        detailMessageArguments:
+          type: array
+          items:
+            type: object
     HttpMethod:
       type: object
     HttpRange:
@@ -769,13 +769,13 @@ components:
           format: double
         charset:
           type: string
-        concrete:
-          type: boolean
         subtypeSuffix:
           type: string
-        wildcardType:
+        concrete:
           type: boolean
         wildcardSubtype:
+          type: boolean
+        wildcardType:
           type: boolean
     ProblemDetail:
       type: object

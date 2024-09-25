@@ -26,6 +26,7 @@ resilience4j:
   circuitbreaker:
     instances:
       UserAdapter:
+        record-exceptions: org.springframework.web.client.ResourceAccessException
         registerHealthIndicator: true
         eventConsumerBufferSize: 10
         failureRateThreshold: 50
@@ -36,6 +37,7 @@ resilience4j:
         slidingWindowSize: 10
         slidingWindowType: COUNT_BASED
       EmailNotificationAdapter:
+        record-exceptions: org.springframework.web.client.ResourceAccessException
         registerHealthIndicator: true
         eventConsumerBufferSize: 10
         failureRateThreshold: 50
@@ -48,9 +50,11 @@ resilience4j:
   retry:
     instances:
       RetryUserAdapter:
+        record-exceptions: org.springframework.web.client.ResourceAccessException
         maxRetryAttempts: 3
         waitDuration: 500ms
       RetryEmailNotificationAdapter:
+        record-exceptions: org.springframework.web.client.ResourceAccessException
         maxRetryAttempts: 3
         waitDuration: 500ms
 logging:
