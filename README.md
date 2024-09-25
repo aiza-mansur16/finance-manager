@@ -37,10 +37,12 @@ This will generate the documentation at path:
 src\main\resources\openapi\finance-manager-specification.yaml
 ```
 
-### Postman Collection ###
+## Postman Collection ##
+Postman collection for finance manager service can be found at:
+```
+src\main\resources\postman\finance-manager-postman-collection.json
+```
 To run the APIs in collection add in global environment the following variable value
 ```
 FM_PORT -> port on which finance manager service is running
 ```
-[Link](https://api.postman.com/collections/38535958-cc4e10c2-9583-4f42-8bf4-650c99515e33?access_key=PMAT-01J8FXA0HCX3HSZAG6AGFPDJBN)
-to the collection.
