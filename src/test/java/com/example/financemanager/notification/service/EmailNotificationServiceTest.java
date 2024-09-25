@@ -1,7 +1,6 @@
-package com.example.financemanager.notification;
+package com.example.financemanager.notification.service;
 
 import com.example.financemanager.adapter.EmailNotificationAdapter;
-import com.example.financemanager.notification.service.EmailNotificationService;
 import com.example.financemanager.utils.model.EmailInfoDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

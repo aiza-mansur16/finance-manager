@@ -1,4 +1,4 @@
-package com.example.financemanager.budget;
+package com.example.financemanager.budget.controller;
 
 import com.example.financemanager.budget.model.BudgetCreateDto;
 import com.example.financemanager.budget.model.BudgetDto;
@@ -62,7 +62,7 @@ class BudgetControllerTest {
                         "Grocery Budget"
                 ));
         var response = testRestTemplate.exchange(
-                "http://localhost:" + port + "/api/budgets",
+                "http://localhost:" + port + "/api/v1/budgets",
                 HttpMethod.POST,
                 new HttpEntity<>(new BudgetCreateDto(
                         1L,
@@ -87,7 +87,7 @@ class BudgetControllerTest {
                 );
         try {
             testRestTemplate.exchange(
-                    "http://localhost:" + port + "/api/budgets",
+                    "http://localhost:" + port + "/api/v1/budgets",
                     HttpMethod.POST,
                     new HttpEntity<>(new BudgetCreateDto(
                             1L,
@@ -105,7 +105,7 @@ class BudgetControllerTest {
     }
 
     @Test
-    void getAllBudgetsSuccess() {
+    void testGetAllBudgetsSuccess() {
         Mockito.when(budgetService.findAllBudgets(any()))
                .thenReturn(new ResponseEnvelope<>(
                         List.of(
@@ -123,7 +123,7 @@ class BudgetControllerTest {
                        null
                 ));
         var response = testRestTemplate.exchange(
-                "http://localhost:" + port + "/api/budgets?page=0&size=10",
+                "http://localhost:" + port + "/api/v1/budgets?page=0&size=10",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<ResponseEnvelope<List<BudgetDto>>>() {
@@ -148,7 +148,7 @@ class BudgetControllerTest {
                         "Grocery Budget"
                 ));
         var response = testRestTemplate.exchange(
-                "http://localhost:" + port + "/api/budgets/1",
+                "http://localhost:" + port + "/api/v1/budgets/1",
                 HttpMethod.PATCH,
                 new HttpEntity<>(new BudgetPatchDto(
                         BigDecimal.valueOf(11000.00),
@@ -166,7 +166,7 @@ class BudgetControllerTest {
                .thenThrow(new EntityNotFoundException("Budget not found for given id."));
         try {
             testRestTemplate.exchange(
-                    "http://localhost:" + port + "/api/budgets/1",
+                    "http://localhost:" + port + "/api/v1/budgets/1",
                     HttpMethod.PATCH,
                     new HttpEntity<>(new BudgetPatchDto(
                             BigDecimal.valueOf(11000.00),
@@ -183,7 +183,7 @@ class BudgetControllerTest {
     void deleteBudgetSuccess() {
         Mockito.doNothing().when(budgetService).deleteBudget(any());
         var response = testRestTemplate.exchange(
-                "http://localhost:" + port + "/api/budgets/1",
+                "http://localhost:" + port + "/api/v1/budgets/1",
                 HttpMethod.DELETE,
                 null,
                 ResponseEnvelope.class
@@ -192,7 +192,7 @@ class BudgetControllerTest {
     }
 
     @Test
-    void getBudgetByIdSuccess() {
+    void testGetBudgetByIdSuccess() {
         Mockito.when(budgetService.findById(any()))
                .thenReturn(new BudgetDto(
                         1L,
@@ -204,7 +204,7 @@ class BudgetControllerTest {
                         "Grocery Budget"
                 ));
         var response = testRestTemplate.exchange(
-                "http://localhost:" + port + "/api/budgets/1",
+                "http://localhost:" + port + "/api/v1/budgets/1",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<ResponseEnvelope<BudgetDto>>() {
@@ -214,12 +214,12 @@ class BudgetControllerTest {
     }
 
     @Test
-    void getBudgetByIdFailure() {
+    void testGetBudgetByIdFailure() {
         Mockito.when(budgetService.findById(any()))
                .thenThrow(new EntityNotFoundException("Budget not found for given id."));
         try {
             testRestTemplate.exchange(
-                    "http://localhost:" + port + "/api/budgets/1",
+                    "http://localhost:" + port + "/api/v1/budgets/1",
                     HttpMethod.GET,
                     null,
                     ResponseEnvelope.class

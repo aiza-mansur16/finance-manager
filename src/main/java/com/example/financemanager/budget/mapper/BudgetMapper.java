@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface BudgetMapper {
 
-    @Mapping(ignore = true, target = "id")
-    BudgetEntity toBudgetEntity(BudgetCreateDto budgetCreateDto);
+  @Mapping(ignore = true, target = "id")
+  BudgetEntity toBudgetEntity(BudgetCreateDto budgetCreateDto);
 
-    BudgetDto toBudgetDto(BudgetEntity budgetEntity);
+  BudgetDto toBudgetDto(BudgetEntity budgetEntity);
 }

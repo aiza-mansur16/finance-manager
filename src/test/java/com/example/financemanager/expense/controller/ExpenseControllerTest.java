@@ -1,4 +1,4 @@
-package com.example.financemanager.expense;
+package com.example.financemanager.expense.controller;
 
 import com.example.financemanager.expense.model.ExpenseCreateDto;
 import com.example.financemanager.expense.model.ExpenseDto;
@@ -64,7 +64,7 @@ class ExpenseControllerTest {
                 )
         );
         var response = testRestTemplate.exchange(
-                "http://localhost:" + port + "/api/expenses",
+                "http://localhost:" + port + "/api/v1/expenses",
                 HttpMethod.POST,
                 new HttpEntity<>(new ExpenseCreateDto(
                         1L,
@@ -86,7 +86,7 @@ class ExpenseControllerTest {
         );
         try {
             testRestTemplate.exchange(
-                    "http://localhost:" + port + "/api/expenses",
+                    "http://localhost:" + port + "/api/v1/expenses",
                     HttpMethod.POST,
                     new HttpEntity<>(new ExpenseCreateDto(
                             1L,
@@ -104,7 +104,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void getAllExpensesSuccess() {
+    void testGetAllExpensesSuccess() {
         Mockito.when(expenseService.findAllExpenses(any())).thenReturn(
                 new ResponseEnvelope<>(
                         List.of(
@@ -120,7 +120,7 @@ class ExpenseControllerTest {
                         null,
                         null));
         var response = testRestTemplate.exchange(
-                "http://localhost:" + port + "/api/expenses?page=0&size=10",
+                "http://localhost:" + port + "/api/v1/expenses?page=0&size=10",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<ResponseEnvelope<List<ExpenseDto>>>() {
@@ -136,7 +136,7 @@ class ExpenseControllerTest {
     void deleteExpenseSuccess() {
         Mockito.doNothing().when(expenseService).deleteExpense(anyLong());
         var response = testRestTemplate.exchange(
-                "http://localhost:" + port + "/api/expenses/1",
+                "http://localhost:" + port + "/api/v1/expenses/1",
                 HttpMethod.DELETE,
                 null,
                 new ParameterizedTypeReference<ResponseEnvelope<Void>>() {
@@ -146,7 +146,7 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void getExpenseByIdSuccess() {
+    void testGetExpenseByIdSuccess() {
         Mockito.when(expenseService.findById(anyLong())).thenReturn(
                 new ExpenseDto(
                         1L,
@@ -158,7 +158,7 @@ class ExpenseControllerTest {
                 )
         );
         var response = testRestTemplate.exchange(
-                "http://localhost:" + port + "/api/expenses/1",
+                "http://localhost:" + port + "/api/v1/expenses/1",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<ResponseEnvelope<ExpenseDto>>() {
@@ -170,13 +170,13 @@ class ExpenseControllerTest {
     }
 
     @Test
-    void getExpenseByIdFailure() {
+    void testGetExpenseByIdFailure() {
         Mockito.when(expenseService.findById(anyLong())).thenThrow(
                 new EntityNotFoundException("Expense not found for given id.")
         );
         try {
             testRestTemplate.exchange(
-                    "http://localhost:" + port + "/api/expenses/1",
+                    "http://localhost:" + port + "/api/v1/expenses/1",
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<ResponseEnvelope<ExpenseDto>>() {

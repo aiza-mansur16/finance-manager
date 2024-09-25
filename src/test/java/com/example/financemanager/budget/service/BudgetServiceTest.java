@@ -1,11 +1,10 @@
-package com.example.financemanager.budget;
+package com.example.financemanager.budget.service;
 
 import com.example.financemanager.budget.model.BudgetCreateDto;
 import com.example.financemanager.budget.model.BudgetEntity;
 import com.example.financemanager.budget.model.BudgetPatchDto;
 import com.example.financemanager.budget.model.BudgetQueryDto;
 import com.example.financemanager.budget.repository.BudgetRepository;
-import com.example.financemanager.budget.service.BudgetService;
 import com.example.financemanager.utils.model.Category;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;

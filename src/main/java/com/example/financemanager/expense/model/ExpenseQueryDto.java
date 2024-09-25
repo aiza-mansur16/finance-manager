@@ -42,8 +42,8 @@ public record ExpenseQueryDto(
         Integer page,
         @Schema(description = "page size")
         @JsonProperty("size")
-        @Min(value = 1)
-        @Max(value = 50)
+        @Min(1)
+        @Max(50)
         @NotNull
         Integer size
 ) {

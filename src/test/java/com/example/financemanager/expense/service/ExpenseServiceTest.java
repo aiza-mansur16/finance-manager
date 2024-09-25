@@ -1,10 +1,9 @@
-package com.example.financemanager.expense;
+package com.example.financemanager.expense.service;
 
 import com.example.financemanager.expense.model.ExpenseCreateDto;
 import com.example.financemanager.expense.model.ExpenseEntity;
 import com.example.financemanager.expense.model.ExpenseQueryDto;
 import com.example.financemanager.expense.repository.ExpenseRepository;
-import com.example.financemanager.expense.service.ExpenseService;
 import com.example.financemanager.tracker.service.ExpenseTrackerService;
 import com.example.financemanager.utils.model.Category;
 import jakarta.persistence.EntityNotFoundException;

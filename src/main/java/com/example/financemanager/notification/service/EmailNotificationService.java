@@ -6,14 +6,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailNotificationService implements Notification<EmailInfoDto> {
-    private final EmailNotificationAdapter emailNotificationAdapter;
+  private final EmailNotificationAdapter emailNotificationAdapter;
 
-    public EmailNotificationService(EmailNotificationAdapter emailNotificationAdapter) {
-        this.emailNotificationAdapter = emailNotificationAdapter;
-    }
+  public EmailNotificationService(EmailNotificationAdapter emailNotificationAdapter) {
+    this.emailNotificationAdapter = emailNotificationAdapter;
+  }
 
-    @Override
-    public void notify(EmailInfoDto notification) {
-        emailNotificationAdapter.sendAlert(notification);
-    }
+  @Override
+  public void notify(EmailInfoDto notification) {
+    emailNotificationAdapter.sendAlert(notification);
+  }
 }

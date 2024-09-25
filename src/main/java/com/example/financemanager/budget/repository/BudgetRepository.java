@@ -10,10 +10,10 @@ import java.util.Optional;
 
 @Repository
 public interface BudgetRepository extends JpaRepository<BudgetEntity, Long> {
-    Optional<BudgetEntity> findByUserIdAndMonthAndYearAndCategory(
-            Long userId,
-            Month month,
-            Integer year,
-            Category category
-    );
+  Optional<BudgetEntity> findByUserIdAndMonthAndYearAndCategory(
+      Long userId,
+      Month month,
+      Integer year,
+      Category category
+  );
 }

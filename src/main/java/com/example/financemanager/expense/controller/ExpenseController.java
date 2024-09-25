@@ -18,66 +18,69 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/expenses")
+@RequestMapping("/api/v1/expenses")
 @Validated
+@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {
+    "EI_EXPOSE_REP2"
+}, justification = "It is only used as an entry point for expense api requests")
 public class ExpenseController {
 
-    private final ExpenseService expenseService;
+  private final ExpenseService expenseService;
 
-    public ExpenseController(ExpenseService expenseService) {
-        this.expenseService = expenseService;
-    }
+  public ExpenseController(ExpenseService expenseService) {
+    this.expenseService = expenseService;
+  }
 
-    @Operation(summary = "Add a new expense", description = "Create a new expense record",
-            responses = {
-                    @ApiResponse(responseCode = "201", description = "Expense created successfully",
-                            content = @Content(schema = @Schema(implementation = ResponseEnvelope.class))),
+  @Operation(summary = "Add a new expense", description = "Create a new expense record",
+      responses = {
+          @ApiResponse(responseCode = "201", description = "Expense created successfully",
+              content = @Content(schema = @Schema(implementation = ResponseEnvelope.class))),
 
-                    @ApiResponse(responseCode = "400", description = "Invalid request",
-                            content = @Content(schema = @Schema(implementation = ResponseEnvelope.class))),
+          @ApiResponse(responseCode = "400", description = "Invalid request",
+              content = @Content(schema = @Schema(implementation = ResponseEnvelope.class))),
 
-                    @ApiResponse(responseCode = "500", description = "Internal server error",
-                            content = @Content(schema = @Schema(implementation = ResponseEnvelope.class)))
-            }
-    )
-    @PostMapping
-    public ResponseEntity<ResponseEnvelope<ExpenseDto>> addExpense(@RequestBody @Valid ExpenseCreateDto expense) {
-        return new ResponseEntity<>(new ResponseEnvelope<>(expenseService.createExpense(expense), null, null),
-                HttpStatus.CREATED);
-    }
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+              content = @Content(schema = @Schema(implementation = ResponseEnvelope.class)))
+      }
+  )
+  @PostMapping
+  public ResponseEntity<ResponseEnvelope<ExpenseDto>> addExpense(@RequestBody @Valid ExpenseCreateDto expense) {
+    return new ResponseEntity<>(new ResponseEnvelope<>(expenseService.createExpense(expense), null, null),
+        HttpStatus.CREATED);
+  }
 
-    @Operation(summary = "Get all expenses", description = "Retrieve all expense records",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Expenses retrieved successfully",
-                            content = @Content(schema = @Schema(implementation = ResponseEnvelope.class))),
-            }
-    )
-    @GetMapping
-    public ResponseEntity<ResponseEnvelope<List<ExpenseDto>>> getAllExpenses(@Valid ExpenseQueryDto expenseQueryDto) {
-        return new ResponseEntity<>(expenseService.findAllExpenses(expenseQueryDto), HttpStatus.OK);
-    }
+  @Operation(summary = "Get all expenses", description = "Retrieve all expense records",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "Expenses retrieved successfully",
+              content = @Content(schema = @Schema(implementation = ResponseEnvelope.class))),
+      }
+  )
+  @GetMapping
+  public ResponseEntity<ResponseEnvelope<List<ExpenseDto>>> getAllExpenses(@Valid ExpenseQueryDto expenseQueryDto) {
+    return new ResponseEntity<>(expenseService.findAllExpenses(expenseQueryDto), HttpStatus.OK);
+  }
 
-    @Operation(summary = "Get expense by id", description = "Retrieve expense by id",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Expense found successfully",
-                            content = @Content(schema = @Schema(implementation = ResponseEnvelope.class))),
-                    @ApiResponse(responseCode = "404", description = "Expense not found")
-            }
-    )
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<ResponseEnvelope<ExpenseDto>> getExpenseById(@PathVariable Long id) {
-        return new ResponseEntity<>(new ResponseEnvelope<>(expenseService.findById(id), null, null),
-                HttpStatus.OK);
-    }
+  @Operation(summary = "Get expense by id", description = "Retrieve expense by id",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "Expense found successfully",
+              content = @Content(schema = @Schema(implementation = ResponseEnvelope.class))),
+          @ApiResponse(responseCode = "404", description = "Expense not found")
+      }
+  )
+  @GetMapping("/{id}")
+  public ResponseEntity<ResponseEnvelope<ExpenseDto>> getExpenseById(@PathVariable Long id) {
+    return new ResponseEntity<>(new ResponseEnvelope<>(expenseService.findById(id), null, null),
+        HttpStatus.OK);
+  }
 
-    @Operation(summary = "Delete expense", description = "Delete expense by id",
-            responses = {
-            @ApiResponse(responseCode = "204", description = "Expense deleted successfully"),
-            }
-    )
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<ResponseEnvelope<Void>> deleteExpense(@PathVariable Long id) {
-        expenseService.deleteExpense(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+  @Operation(summary = "Delete expense", description = "Delete expense by id",
+      responses = {
+          @ApiResponse(responseCode = "204", description = "Expense deleted successfully"),
+      }
+  )
+  @DeleteMapping("/{id}")
+  public ResponseEntity<ResponseEnvelope<Void>> deleteExpense(@PathVariable Long id) {
+    expenseService.deleteExpense(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
 }
