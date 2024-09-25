@@ -1,8 +1,8 @@
 package com.example.financemanager.utils.model.exception;
 
-public class ThirdPartyServiceUnavailableException extends  RuntimeException{
+public class ThirdPartyServiceUnavailableException extends RuntimeException {
 
-    public ThirdPartyServiceUnavailableException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public ThirdPartyServiceUnavailableException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

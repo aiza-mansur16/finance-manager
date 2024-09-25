@@ -8,10 +8,10 @@ import java.time.Month;
 import java.util.List;
 
 public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Long> {
-    List<ExpenseEntity> findByUserIdAndMonthAndYearAndCategory(
-            Long userId,
-            Month month,
-            Integer year,
-            Category category
-    );
+  List<ExpenseEntity> findByUserIdAndMonthAndYearAndCategory(
+      Long userId,
+      Month month,
+      Integer year,
+      Category category
+  );
 }

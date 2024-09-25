@@ -14,17 +14,17 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class ApplicationConfiguration {
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper()
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                .registerModule(new JavaTimeModule());
-    }
+  @Bean
+  public ObjectMapper objectMapper() {
+    return new ObjectMapper()
+        .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        .registerModule(new JavaTimeModule());
+  }
 
-    @Bean
-    public RestTemplate restTemplate() {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
-        return new RestTemplate(factory);
-    }
+  @Bean
+  public RestTemplate restTemplate() {
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
+    return new RestTemplate(factory);
+  }
 }

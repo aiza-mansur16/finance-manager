@@ -18,92 +18,92 @@ import java.math.BigDecimal;
 @Service
 public class ExpenseTrackerService implements Tracker<ExpenseEntity> {
 
-    private final ExpenseRepository expenseRepository;
+  private final ExpenseRepository expenseRepository;
 
-    private final BudgetRepository budgetRepository;
+  private final BudgetRepository budgetRepository;
 
-    private final UserAdapter userAdapter;
+  private final UserAdapter userAdapter;
 
-    private final EmailNotificationService emailNotificationService;
+  private final EmailNotificationService emailNotificationService;
 
-    @Value("${user.api.base-url}")
-    private String userApiBaseUrl;
+  @Value("${user.api.base-url}")
+  private String userApiBaseUrl;
 
-    public ExpenseTrackerService(ExpenseRepository expenseRepository,
-                                 BudgetRepository budgetRepository,
-                                 UserAdapter userAdapter, EmailNotificationService emailNotificationService) {
-        this.expenseRepository = expenseRepository;
-        this.budgetRepository = budgetRepository;
-        this.userAdapter = userAdapter;
-        this.emailNotificationService = emailNotificationService;
+  public ExpenseTrackerService(ExpenseRepository expenseRepository,
+                               BudgetRepository budgetRepository,
+                               UserAdapter userAdapter, EmailNotificationService emailNotificationService) {
+    this.expenseRepository = expenseRepository;
+    this.budgetRepository = budgetRepository;
+    this.userAdapter = userAdapter;
+    this.emailNotificationService = emailNotificationService;
+  }
+
+  @Override
+  public void track(ExpenseEntity expenseInfo) {
+    if (log.isDebugEnabled()) {
+      log.debug("Tracking expense for user: {}", expenseInfo.getUserId());
     }
-
-    @Override
-    public void track(ExpenseEntity expenseInfo) {
-        if (log.isDebugEnabled()) {
-            log.debug("Tracking expense for user: {}", expenseInfo.getUserId());
-        }
-        budgetRepository.findByUserIdAndMonthAndYearAndCategory(
-                        expenseInfo.getUserId(),
-                        expenseInfo.getMonth(),
-                        expenseInfo.getYear(),
-                        expenseInfo.getCategory())
-                .ifPresent(
-                        budget -> {
-                            var expenses = expenseRepository.findByUserIdAndMonthAndYearAndCategory(
-                                    expenseInfo.getUserId(),
-                                    expenseInfo.getMonth(),
-                                    expenseInfo.getYear(),
-                                    expenseInfo.getCategory());
-                            var totalExpenses = expenses.stream().map(ExpenseEntity::getAmount)
-                                    .reduce(expenseInfo.getAmount(), BigDecimal::add);
-                            if (totalExpenses.compareTo(budget.getLimit()) > 0) {
-                                if (log.isDebugEnabled()) {
-                                    log.debug("Total expense:{} of user:{} for month:{}, year:{} and category:{} has " +
-                                                    "exceeded the budget limit:{}",
-                                            totalExpenses,
-                                            expenseInfo.getUserId(),
-                                            expenseInfo.getMonth(),
-                                            budget.getYear(),
-                                            budget.getCategory(),
-                                            budget.getLimit());
-                                }
-                                var user = fetchUserInfo(expenseInfo.getUserId());
-                                var exceededAmount = totalExpenses.subtract(expenseInfo.getAmount());
-                                var notification = createEmailNotification(user, budget, expenseInfo, exceededAmount);
-                                emailNotificationService.notify(notification);
-                            }
-                        }
-                );
-    }
+    budgetRepository.findByUserIdAndMonthAndYearAndCategory(
+            expenseInfo.getUserId(),
+            expenseInfo.getMonth(),
+            expenseInfo.getYear(),
+            expenseInfo.getCategory())
+        .ifPresent(
+            budget -> {
+              var expenses = expenseRepository.findByUserIdAndMonthAndYearAndCategory(
+                  expenseInfo.getUserId(),
+                  expenseInfo.getMonth(),
+                  expenseInfo.getYear(),
+                  expenseInfo.getCategory());
+              var totalExpenses = expenses.stream().map(ExpenseEntity::getAmount)
+                  .reduce(expenseInfo.getAmount(), BigDecimal::add);
+              if (totalExpenses.compareTo(budget.getLimit()) > 0) {
+                if (log.isDebugEnabled()) {
+                  log.debug("Total expense:{} of user:{} for month:{}, year:{} and category:{} has " +
+                          "exceeded the budget limit:{}",
+                      totalExpenses,
+                      expenseInfo.getUserId(),
+                      expenseInfo.getMonth(),
+                      budget.getYear(),
+                      budget.getCategory(),
+                      budget.getLimit());
+                }
+                var user = fetchUserInfo(expenseInfo.getUserId());
+                var exceededAmount = totalExpenses.subtract(expenseInfo.getAmount());
+                var notification = createEmailNotification(user, budget, expenseInfo, exceededAmount);
+                emailNotificationService.notify(notification);
+              }
+            }
+        );
+  }
 
 
-    private UserDto fetchUserInfo(Long userId) {
-        return userAdapter.getInfo(userApiBaseUrl + "/" + userId);
-    }
+  private UserDto fetchUserInfo(Long userId) {
+    return userAdapter.getInfo(userApiBaseUrl + "/" + userId);
+  }
 
-    private EmailInfoDto createEmailNotification(UserDto user, BudgetEntity budget, ExpenseEntity expenseInfo,
-                                                 BigDecimal exceededAmount) {
-        var message = new StringBuilder(" To %s, %n %n ")
-                .append("Your expenses for %s %s and category %s have exceeded the set budget limit by %s. %n")
-                .append("Details of budget and recent expense are as follows: %n")
-                .append("Budget Category: %s %n")
-                .append("Budget Amount: %s %n")
-                .append("Expense Description: %s %n")
-                .append("Expense Amount: %s %n %n")
-                .append("Regards, %n")
-                .append("Finance Manager App");
-        return new EmailInfoDto(user.email(), "Budget Exceed Alert",
-                String.format(message.toString(),
-                        user.firstName(),
-                        budget.getMonth(),
-                        budget.getYear(),
-                        budget.getCategory(),
-                        exceededAmount,
-                        budget.getCategory(),
-                        budget.getLimit(),
-                        expenseInfo.getDescription(),
-                        expenseInfo.getAmount()));
-    }
+  private EmailInfoDto createEmailNotification(UserDto user, BudgetEntity budget, ExpenseEntity expenseInfo,
+                                               BigDecimal exceededAmount) {
+    var message = new StringBuilder(" To %s, %n %n ")
+        .append("Your expenses for %s %s and category %s have exceeded the set budget limit by %s. %n")
+        .append("Details of budget and recent expense are as follows: %n")
+        .append("Budget Category: %s %n")
+        .append("Budget Amount: %s %n")
+        .append("Expense Description: %s %n")
+        .append("Expense Amount: %s %n %n")
+        .append("Regards, %n")
+        .append("Finance Manager App");
+    return new EmailInfoDto(user.email(), "Budget Exceed Alert",
+        String.format(message.toString(),
+            user.firstName(),
+            budget.getMonth(),
+            budget.getYear(),
+            budget.getCategory(),
+            exceededAmount,
+            budget.getCategory(),
+            budget.getLimit(),
+            expenseInfo.getDescription(),
+            expenseInfo.getAmount()));
+  }
 
 }

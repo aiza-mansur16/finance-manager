@@ -16,34 +16,34 @@ import java.time.Month;
 @Builder
 @Entity(name = "budget")
 @Table(
-        name="budget",
-        uniqueConstraints=
-        @UniqueConstraint(name = "monthlyUserBudgetConstraint",
-                columnNames={"user_id", "budget_month", "budget_year", "budget_category"})
+    name = "budget",
+    uniqueConstraints =
+    @UniqueConstraint(name = "monthlyUserBudgetConstraint",
+        columnNames = {"user_id", "budget_month", "budget_year", "budget_category"})
 )
 public class BudgetEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", nullable = false)
+  private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+  @Column(name = "user_id", nullable = false)
+  private Long userId;
 
-    @Column(name = "budget_category", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Category category;
+  @Column(name = "budget_category", nullable = false)
+  @Enumerated(EnumType.STRING)
+  private Category category;
 
-    @Column(name = "budget_limit", nullable = false)
-    private BigDecimal limit;
+  @Column(name = "budget_limit", nullable = false)
+  private BigDecimal limit;
 
-    @Column(name = "budget_month", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Month month;
+  @Column(name = "budget_month", nullable = false)
+  @Enumerated(EnumType.STRING)
+  private Month month;
 
-    @Column(name = "budget_year", nullable = false)
-    private Integer year;
+  @Column(name = "budget_year", nullable = false)
+  private Integer year;
 
-    @Column(name = "description")
-    private String description;
+  @Column(name = "description")
+  private String description;
 }

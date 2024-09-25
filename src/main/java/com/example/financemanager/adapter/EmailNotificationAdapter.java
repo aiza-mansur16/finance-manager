@@ -14,34 +14,34 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class EmailNotificationAdapter extends AbstractNotificationAdapter<EmailInfoDto> {
 
-    protected EmailNotificationAdapter(RestTemplate restTemplate) {
-        super(restTemplate);
-    }
+  protected EmailNotificationAdapter(RestTemplate restTemplate) {
+    super(restTemplate);
+  }
 
-    @CircuitBreaker(name = "EmailNotificationAdapter")
-    @Retry(name = "RetryEmailNotificationAdapter")
-    @Override
-    public void sendAlert(EmailInfoDto notificationDto) {
-        try {
-            if (log.isDebugEnabled()) {
-                log.debug("Sending email notification to user");
-            }
-            var url = notificationApiBaseUrl + "/mail";
-            restTemplate.postForObject(
-                    url,
-                    notificationDto,
-                    ResponseEnvelope.class
-            );
-            if (log.isDebugEnabled()) {
-                log.debug("Successfully sent email notification to user");
-            }
-        } catch (HttpClientErrorException e) {
-            if (log.isWarnEnabled()) {
-                log.warn("Failed to send email notification for user with email: {}", notificationDto.recipientEmail());
-            }
-            throw new NotificationNotSentException("Failed to send notification for user with email: " +
-                    notificationDto.recipientEmail(), e);
-        }
+  @CircuitBreaker(name = "EmailNotificationAdapter")
+  @Retry(name = "RetryEmailNotificationAdapter")
+  @Override
+  public void sendAlert(EmailInfoDto notificationDto) {
+    try {
+      if (log.isDebugEnabled()) {
+        log.debug("Sending email notification to user");
+      }
+      var url = notificationApiBaseUrl + "/mail";
+      restTemplate.postForObject(
+          url,
+          notificationDto,
+          ResponseEnvelope.class
+      );
+      if (log.isDebugEnabled()) {
+        log.debug("Successfully sent email notification to user");
+      }
+    } catch (HttpClientErrorException e) {
+      if (log.isWarnEnabled()) {
+        log.warn("Failed to send email notification for user with email: {}", notificationDto.recipientEmail());
+      }
+      throw new NotificationNotSentException("Failed to send notification for user with email: " +
+          notificationDto.recipientEmail(), e);
     }
+  }
 
 }
