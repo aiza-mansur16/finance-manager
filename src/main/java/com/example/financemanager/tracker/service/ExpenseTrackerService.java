@@ -69,7 +69,7 @@ public class ExpenseTrackerService implements Tracker<ExpenseEntity> {
                       budget.getLimit());
                 }
                 var user = fetchUserInfo(expenseInfo.getUserId());
-                var exceededAmount = totalExpenses.subtract(expenseInfo.getAmount());
+                var exceededAmount = totalExpenses.subtract(budget.getLimit());
                 var notification = createEmailNotification(user, budget, expenseInfo, exceededAmount);
                 emailNotificationService.notify(notification);
               }
